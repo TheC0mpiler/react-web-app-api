@@ -27,6 +27,7 @@
 		"express": "^4.16.2",
 		"jsonwebtoken": "^8.1.1",
 		"mongodb": "^3.0.1",
+		"mongodb-core": "^3.0.1",
 		"mongoose": "^5.0.1",
 		"nodemon": "^1.14.11",
 		"prettier": "^1.10.2"

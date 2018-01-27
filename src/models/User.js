@@ -13,7 +13,8 @@ const schema = new mongoose.Schema(
 			unique: true
 		},
 		passwordHash: { type: String, required: true },
-		confirmed: { type: Boolean, default: false }
+		confirmed: { type: Boolean, default: false },
+		confirmationToken: { type: String, default: "" }
 	},
 	{ timestamps: true }
 );
@@ -32,6 +33,12 @@ schema.methods.generateJWT = function generateJWT() {
 };
 schema.methods.setPassword = function setPassword(password) {
 	this.passwordHash = bcrypt.hashSync(password, 10);
+};
+schema.methods.setConfirmationToken = function setConfirmationToken() {
+	this.confirmationToken = this.generateJWT();
+};
+schema.methods.generateJWTConfirmationUrl = function generateJWTConfirmationUrl() {
+	return `${process.env.HOST}/confimation/${this.confirmationToken}`;
 };
 schema.methods.toAuthJSON = function toAuthJSON() {
 	return {

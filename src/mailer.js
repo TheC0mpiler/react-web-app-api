@@ -12,16 +12,17 @@ function setup() {
 		}
 	});
 }
-export function sendConfirmationEmai(user) {
-	const transport = setup();
+export function sendConfirmationEmail(user) {
+	const tranport = setup();
 	const email = {
 		from,
 		to: user.email,
-		subject: "Welcome to my react web app",
+		subject: "Welcome to Bookworm",
 		text: `
-		Ẁelcome to my react webApp, please confirm your email.
-		${user.generateJWTConfirmationUrl()}
-		`
+    Welcome to Bookworm. Please, confirm your email.
+    ${user.generateJWTConfirmationUrl()}
+    `
 	};
-	transport.sendEmail(email);
+
+	tranport.sendMail(email);
 }

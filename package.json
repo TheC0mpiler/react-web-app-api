@@ -29,6 +29,7 @@
 		"mongodb": "^3.0.1",
 		"mongodb-core": "^3.0.1",
 		"mongoose": "^5.0.1",
+		"mongoose-unique-validator": "^2.0.0",
 		"nodemon": "^1.14.11",
 		"prettier": "^1.10.2"
 	}

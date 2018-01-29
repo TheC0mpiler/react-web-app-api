@@ -14,7 +14,8 @@ const schema = new mongoose.Schema(
 		},
 		passwordHash: { type: String, required: true },
 		confirmed: { type: Boolean, default: false },
-		confirmationToken: { type: String, default: "" }
+		confirmationToken: { type: String, default: "" },
+		resetPasswordToken: { type: String, default: "" }
 	},
 	{ timestamps: true }
 );
@@ -39,9 +40,15 @@ schema.methods.generateResetPasswordToken = function generateResetPasswordToken(
 		},
 		process.env.JWT_SECRET,
 		{
-			expireIn: "1s"
+			expiresIn: "1h"
 		}
 	);
+};
+schema.methods.setResetPasswordToken = function setResetPasswordToken() {
+	this.resetPasswordToken = this.generateResetPasswordToken();
+};
+schema.methods.generateResetPasswordLink = function generateResetPasswordLink() {
+	return `${process.env.HOST}/reset_password/${this.resetPasswordToken}`;
 };
 schema.methods.setPassword = function setPassword(password) {
 	this.passwordHash = bcrypt.hashSync(password, 10);
@@ -52,6 +59,14 @@ schema.methods.setConfirmationToken = function setConfirmationToken() {
 schema.methods.generateJWTConfirmationUrl = function generateJWTConfirmationUrl() {
 	return `${process.env.HOST}/confirmation/${this.confirmationToken}`;
 };
+schema.methods.toConfirmationJSON = function toConfirmationJSON() {
+	this.confirmed = true;
+	return {
+		email: this.email,
+		confirmed: this.confirmed,
+		token: this.generateJWT()
+	};
+};
 schema.methods.toAuthJSON = function toAuthJSON() {
 	return {
 		email: this.email,
@@ -59,13 +74,6 @@ schema.methods.toAuthJSON = function toAuthJSON() {
 		token: this.generateJWT()
 	};
 };
-
-schema.methods.generateResetPasswordLink = function generateResetPasswordLink() {
-	return `${
-		process.env.HOST
-	}/reset_password/${this.generateResetPasswordToken()}`;
-};
-
 schema.plugin(uniqueValidator, { message: "This email is already taken" });
 
 export default mongoose.model("User", schema);
